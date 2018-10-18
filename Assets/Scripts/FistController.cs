@@ -11,16 +11,23 @@ public class FistController : MonoBehaviour {
     private Rigidbody2D hitRb;
     public float moveSpeed = 0.1f;
     public float maxSpeed = 1f;
+    public float reach = 1f;
 
-	//// Use this for initialization
-	//void Start () {
-		
-	//}
-	
-	// Update is called once per frame
-	void Update () {
+    public GameObject player;
+    private Transform playerTransform;
+
+    //// Use this for initialization
+    void start()
+    {
+    }
+
+    // Update is called once per frame
+    void Update () {
+        playerTransform = player.transform;
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         gameObject.GetComponent<Rigidbody2D>().velocity = (mousePosition - transform.position).normalized * moveSpeed;
+
+        transform.position = playerTransform.position + Vector3.ClampMagnitude(transform.position - playerTransform.position, reach);
 	}
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -28,7 +35,7 @@ public class FistController : MonoBehaviour {
         mouseVector = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
         hitObject = collision.gameObject;
-        hitRb = gameObject.GetComponent<Rigidbody2D>();
+        hitRb = hitObject.GetComponent<Rigidbody2D>();
         hitRb.AddForce(mouseVector);
     }
 }
